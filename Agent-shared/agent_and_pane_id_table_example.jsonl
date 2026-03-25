@@ -1,5 +1,0 @@
-{"agent_id": "PM", "tmux_session": "Team1_PM", "tmux_window": 0, "tmux_pane": 0, "claude_session_id": null, "status": "not_started", "last_updated": "2025-08-01T10:00:00Z"}
-{"agent_id": "SE1", "tmux_session": "Team1_Workers1", "tmux_window": 0, "tmux_pane": 0, "claude_session_id": null, "status": "not_started", "last_updated": "2025-08-01T10:00:00Z"}
-{"agent_id": "PG1.1", "tmux_session": "Team1_Workers1", "tmux_window": 0, "tmux_pane": 1, "claude_session_id": null, "status": "not_started", "last_updated": "2025-08-01T10:00:00Z"}
-{"agent_id": "PG1.2", "tmux_session": "Team1_Workers1", "tmux_window": 0, "tmux_pane": 2, "claude_session_id": null, "status": "not_started", "last_updated": "2025-08-01T10:00:00Z"}
-{"agent_id": "PG1.3", "tmux_session": "Team1_Workers1", "tmux_window": 0, "tmux_pane": 3, "claude_session_id": null, "status": "not_started", "last_updated": "2025-08-01T10:00:00Z"}
