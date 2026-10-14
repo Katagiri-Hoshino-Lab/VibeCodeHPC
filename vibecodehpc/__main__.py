@@ -388,6 +388,15 @@ def cmd_launch(args):
         print("Specify an agent ID or use --all.", file=sys.stderr)
         sys.exit(1)
 
+    # Token Keeper gate: a fresh Agent-shared/quota/state.json may pause new agents.
+    if not args.ignore_quota:
+        from vibecodehpc.monitor.quota import read_gate
+        paused, reasons = read_gate(project_root)
+        if paused:
+            print("Quota gate is closed, not starting agents: " + "; ".join(reasons)
+                  + ". Wait for the reset or pass --ignore-quota.", file=sys.stderr)
+            sys.exit(3)
+
     # Validate each target before launching any
     for entry in targets:
         # Validate cli_type
@@ -574,6 +583,8 @@ def main():
     p_launch = sub.add_parser("launch", help="Launch CLI for registered agent(s)")
     p_launch.add_argument("agent_id", nargs="?", help="Agent ID to launch (omit with --all)")
     p_launch.add_argument("--all", action="store_true", help="Launch all non-running workers")
+    p_launch.add_argument("--ignore-quota", action="store_true",
+                          help="Launch even if the Token Keeper gate is closed")
 
     # send
     p_send = sub.add_parser("send", help="Send message to agent")

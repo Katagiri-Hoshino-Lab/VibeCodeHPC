@@ -214,6 +214,13 @@ python3 -m vibecodehpc send <agent-id> "message"
 
 Use your own judgment on what to say. Don't use canned messages — read the situation and respond accordingly.
 
+#### Allocate Agents by Quota
+When the Token Keeper runs (`Agent-shared/quota/`), read the last line of `quota.log` before starting, reassigning or reviving agents.
+- `pause_new_seats yes`: do not start new agents. `launch` refuses while the gate is closed; `--ignore-quota` is for the user's explicit request only. Let running agents finish their current step.
+- A window close to its limit: move new work to agents on a provider or account with room, and give the heavy steps to the agents that are already warm (their prompt cache is still alive) instead of starting fresh ones.
+- After a reset (the keeper sends `[TK] [Report]`), restart paused work in order of priority.
+Never open credential files to check quotas yourself.
+
 ## Constraints
 - No compute point consumption without batch jobs (warn agents running on login nodes)
 - Agents must not `cd` — PM controls directory assignment
