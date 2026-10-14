@@ -103,9 +103,9 @@ def create_pane_grid(
             run_tmux("split-window", "-t", target_base, "-h", check=False)
         else:
             run_tmux("split-window", "-t", target_base, "-v", check=False)
-
-    # Re-tile for even layout
-    run_tmux("select-layout", "-t", target_base, "tiled", check=False)
+        # Re-tile after every split: splitting the shrinking active pane
+        # fails silently once it is too small (e.g. 9 of 12 panes at 80x24).
+        run_tmux("select-layout", "-t", target_base, "tiled", check=False)
 
     # Query actual pane indices
     result = run_tmux(
