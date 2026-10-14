@@ -25,7 +25,8 @@
 #                             "none" leaves it out. Without it the Anthropic
 #                             endpoint folds the system turns a client appends
 #                             into the first system block, which breaks the
-#                             prefix cache right after the system prompt
+#                             prefix cache right after the system prompt.
+#                             In a container, a template outside MODEL_PATH also needs LLM_BIND
 #   LLM_CPU_OFFLOAD_GB [0]    >0: vLLM's own KV offload to host memory
 #   LLM_PREFIX_RETENTION [0]  >0: --prefix-cache-retention-interval (tokens,
 #                             multiple of the block size); see
