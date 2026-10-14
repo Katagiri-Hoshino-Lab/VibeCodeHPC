@@ -10,6 +10,8 @@ Usage:
 
 import argparse
 import os
+import re
+import shlex
 import sys
 import time
 from pathlib import Path
@@ -285,6 +287,15 @@ def cmd_setup(args):
         print(f"  {ws}: tmux attach -t {ws}")
 
 
+_VAR_REF = re.compile(r"\$(?:[A-Za-z_][A-Za-z0-9_]*|\{[A-Za-z_][A-Za-z0-9_]*\})")
+
+
+def _shell_value(value) -> str:
+    """Quote a value for `export`, leaving a bare $VAR reference to expand."""
+    text = str(value)
+    return text if _VAR_REF.fullmatch(text) else shlex.quote(text)
+
+
 def _launch_entry(entry: AgentEntry, project_root: Path, config: VibeCodeConfig | None = None) -> bool:
     """Launch CLI for a single registry entry. Returns True on success.
 
@@ -307,9 +318,13 @@ def _launch_entry(entry: AgentEntry, project_root: Path, config: VibeCodeConfig 
         tmux_target=tmux_target,
         role=entry.role or "",
         model_override=model_override,
+        env_vars=dict(entry.env or {}),
         extra_flags=entry.cli_args or [],
     )
     adapter = create_adapter(agent_config)
+    endpoint = adapter.endpoint_settings(entry.endpoint) if entry.endpoint else None
+    if endpoint:
+        agent_config.extra_flags = list(agent_config.extra_flags) + endpoint.flags
 
     # Verify CLI binary is available before deploying anything
     if not adapter.check_available():
@@ -341,6 +356,16 @@ def _launch_entry(entry: AgentEntry, project_root: Path, config: VibeCodeConfig 
 
     # Export PYTHONPATH so `python3 -m vibecodehpc` works from any workdir
     send_keys(tmux_target, f"export PYTHONPATH={project_root}:${{PYTHONPATH:-}}")
+
+    # Per-agent environment: the endpoint's variables, then the row's own env.
+    for name in endpoint.unset if endpoint else []:
+        send_keys(tmux_target, f"unset {name}")
+    env = {**(endpoint.env if endpoint else {}), **agent_config.env_vars}
+    for key, value in env.items():
+        if not str(key).isidentifier():
+            print(f"  {entry.agent_id}: skipped env name {key!r}", file=sys.stderr)
+            continue
+        send_keys(tmux_target, f"export {key}={_shell_value(value)}")
 
     # Clear any garbage in the line buffer before sending the launch command.
     # tmux pane rendering can leak escape sequences into the input buffer.

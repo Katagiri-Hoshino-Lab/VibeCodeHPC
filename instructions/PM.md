@@ -50,6 +50,8 @@ The adapter layer automatically generates the correct launch command, arguments,
 | Codex | `codex --yolo` | Model via `--model gpt-5.4` etc. |
 | OpenCode | `opencode` | Model via TUI/config. **No thinking models** (tool call parse bug in OpenCode) |
 
+When the requirement definition names a self-hosted model server for an agent, put it in that agent's registry row as `"endpoint": {"base_url": "..."}` (Claude Code: without `/v1`, Codex: with `/v1`) and the served model name in `model`. `launch` sets the environment and flags (see `docs/cli_support_matrix.md`, "Self-Hosted Model Servers"). Extra variables go in `"env"`; never write secrets there.
+
 ## Agent ID Naming Rules
 
 - **PG (Programmer)**: Always 2-level hierarchy. Examples: `PG1.1`, `PG1.2`, `PG2.1`, `PG2.3`.

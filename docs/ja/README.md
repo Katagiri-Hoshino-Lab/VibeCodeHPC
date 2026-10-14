@@ -83,6 +83,8 @@
 
 Claude Code, Codex CLI, Cline CLI, Gemini CLI, OpenCode, vibe-local, Qwen Code, Kimi Code CLI
 
+Claude Code と Codex CLI は、自前のモデルサーバー(Anthropic Messages か OpenAI Responses の API)でも動かせる。エージェントごとに登録表で指定する([詳細](cli_support_matrix.md#自前のモデルサーバー))。
+
 > [CLI対応表](cli_support_matrix.md)
 
 ## 論文・デモ

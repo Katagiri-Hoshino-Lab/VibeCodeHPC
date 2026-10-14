@@ -30,6 +30,12 @@ class AgentEntry:
     model: Optional[str] = None
     role: Optional[str] = None
     cli_args: Optional[list] = None  # extra CLI flags (e.g. ["--context-window", "65536"])
+    # Exported in the pane before launch. Values may reference variables
+    # ("$MY_TOKEN"); do not write secrets here.
+    env: Optional[dict] = None
+    # Self-hosted model server, e.g. {"base_url": "http://127.0.0.1:8000"}.
+    # The adapter turns it into env/flags (CLIAdapter.endpoint_settings).
+    endpoint: Optional[dict] = None
 
     def to_jsonl(self) -> str:
         d = asdict(self)

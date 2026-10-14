@@ -12,11 +12,15 @@ the hooks feature flag is not available.
 """
 
 import json
+import shlex
 import shutil
 from pathlib import Path
 from typing import Optional
 
-from vibecodehpc.adapters.base import CLIAdapter
+from vibecodehpc.adapters.base import CLIAdapter, EndpointSettings
+
+# Provider id used for a self-hosted endpoint in `-c` overrides.
+_ENDPOINT_PROVIDER = "vchpc_endpoint"
 
 # Reuse Claude hook templates — Codex uses the same protocol
 _CLAUDE_TEMPLATE_DIR = (
@@ -217,6 +221,29 @@ class CodexAdapter(CLIAdapter):
             cmd.extend(["--model", self.config.model_override])
         cmd.extend(self.config.extra_flags)
         return cmd
+
+    def endpoint_settings(self, endpoint: dict) -> EndpointSettings:
+        """OpenAI Responses API on a self-hosted server, as `-c` overrides.
+
+        Equivalent to a ``[model_providers.<id>]`` table in config.toml, but
+        per agent and without touching any config file. ``wire_api``
+        defaults to ``responses``.
+        """
+        prefix = f"model_providers.{_ENDPOINT_PROVIDER}"
+        overrides = {
+            f"{prefix}.name": "self-hosted",
+            f"{prefix}.base_url": endpoint["base_url"],
+            f"{prefix}.wire_api": endpoint.get("wire_api", "responses"),
+        }
+        if endpoint.get("api_key_env"):
+            overrides[f"{prefix}.env_key"] = endpoint["api_key_env"]
+        overrides["model_provider"] = _ENDPOINT_PROVIDER
+        flags: list = []
+        for key, value in overrides.items():
+            flags += ["-c", shlex.quote(f'{key}="{value}"')]
+        if not self.config.model_override and endpoint.get("model"):
+            flags += ["--model", shlex.quote(endpoint["model"])]
+        return EndpointSettings(flags=flags)
 
     def build_headless_command(
         self, prompt: str, output_format: str = "text"

@@ -58,6 +58,20 @@ class AgentConfig:
 
 
 @dataclass
+class EndpointSettings:
+    """How a CLI is pointed at a self-hosted model server.
+
+    ``env`` is exported in the pane before launch, ``unset`` is removed from
+    it, and ``flags`` are appended to the launch command (already
+    shell-quoted where needed).
+    """
+
+    env: dict = field(default_factory=dict)
+    flags: list = field(default_factory=list)
+    unset: list = field(default_factory=list)
+
+
+@dataclass
 class HeadlessResult:
     """Result from a headless (one-shot) invocation."""
 
@@ -150,6 +164,16 @@ class CLIAdapter(ABC):
     def build_resume_command(self, session_id: Optional[str] = None) -> list[str]:
         """Build command to resume a previous session. Default: fresh launch."""
         return self.build_launch_command()
+
+    def endpoint_settings(self, endpoint: dict) -> EndpointSettings:
+        """Point the CLI at a self-hosted model server.
+
+        ``endpoint`` comes from the registry row: ``base_url`` (required),
+        optional ``model`` (served model name; the row's ``model`` wins) and
+        ``api_key_env`` (name of a variable that holds the key, if the
+        server checks one). Default: not supported, nothing changes.
+        """
+        return EndpointSettings()
 
     # ── IPC (tmux-based, shared across all adapters) ─────────
 

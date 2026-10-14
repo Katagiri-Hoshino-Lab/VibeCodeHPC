@@ -83,6 +83,8 @@ See [docs/quickstart.md](docs/quickstart.md)
 
 Claude Code, Codex CLI, Cline CLI, Gemini CLI, OpenCode, vibe-local, Qwen Code, Kimi Code CLI
 
+Claude Code and Codex CLI can also run on your own model server (Anthropic Messages or OpenAI Responses API), set per agent in the registry ([details](docs/cli_support_matrix.md#self-hosted-model-servers)).
+
 > [CLI Support Matrix](docs/cli_support_matrix.md)
 
 ## Paper & Demo

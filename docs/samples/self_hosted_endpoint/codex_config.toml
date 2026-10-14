@@ -1,0 +1,14 @@
+# Codex CLI config for a self-hosted Responses API server.
+# codex_agent.sh fills in @MODEL@, @BASE_URL@ and @CONTEXT@.
+model = "@MODEL@"
+model_provider = "self_hosted"
+# The agent runs unattended inside its own work directory.
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+check_for_update_on_startup = false
+model_context_window = @CONTEXT@
+
+[model_providers.self_hosted]
+name = "self-hosted"
+base_url = "@BASE_URL@"
+wire_api = "responses"

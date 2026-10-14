@@ -5,10 +5,20 @@ import shutil
 from pathlib import Path
 from typing import Optional
 
-from vibecodehpc.adapters.base import CLIAdapter
+from vibecodehpc.adapters.base import CLIAdapter, EndpointSettings
 
 # Template directory relative to this file
 _TEMPLATE_DIR = Path(__file__).resolve().parent.parent / "hooks" / "templates" / "claude"
+
+# Every model slot Claude Code may call; all must name a model the server knows.
+_MODEL_SLOTS = (
+    "ANTHROPIC_MODEL",
+    "ANTHROPIC_SMALL_FAST_MODEL",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+    "CLAUDE_CODE_SUBAGENT_MODEL",
+)
 
 
 class ClaudeAdapter(CLIAdapter):
@@ -196,6 +206,27 @@ class ClaudeAdapter(CLIAdapter):
             cmd.extend(["--model", self.config.model_override])
         cmd.extend(self.config.extra_flags)
         return cmd
+
+    def endpoint_settings(self, endpoint: dict) -> EndpointSettings:
+        """Anthropic Messages API (``/v1/messages``) on a self-hosted server.
+
+        Optional ``effort`` sets the effort level and forces Claude Code to
+        send it, which it otherwise does only for model names it knows.
+        """
+        key_env = endpoint.get("api_key_env")
+        env = {
+            "ANTHROPIC_BASE_URL": endpoint["base_url"],
+            # Claude Code needs a credential even when the server checks none.
+            "ANTHROPIC_AUTH_TOKEN": f"${{{key_env}}}" if key_env else "local",
+        }
+        model = self.config.model_override or endpoint.get("model")
+        if model:
+            env.update({slot: model for slot in _MODEL_SLOTS})
+        if endpoint.get("effort"):
+            env["CLAUDE_CODE_EFFORT_LEVEL"] = endpoint["effort"]
+            env["CLAUDE_CODE_ALWAYS_ENABLE_EFFORT"] = "1"
+        # A real key in the environment would be sent to the local server.
+        return EndpointSettings(env=env, unset=["ANTHROPIC_API_KEY"])
 
     def build_headless_command(
         self, prompt: str, output_format: str = "text"
