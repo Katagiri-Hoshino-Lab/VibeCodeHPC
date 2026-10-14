@@ -182,13 +182,13 @@ CDを使用する場合:
 ### 追加指示
 
 #### 全エージェント共通
-[全エージェントへの指示]
+[全エージェントへの指示。例: `instructions/REPORT_RULES.md` に従う。エージェント同士は英語で書く。レビューに出す写しは番号付きの名前(`<name>.v001.<ext>`)にし、元のファイルは名前を変えない]
 
 #### SE向け
-[SE固有の指示。例: SOTAグラフに全結果がプロットされているか定期確認]
+[SE固有の指示。例: SOTAグラフに全結果がプロットされているか定期確認。待ち行列と実績の両方を見る(`squeue` と `sacct`。待ち行列に無いジョブも走った後かもしれない)]
 
 #### PG向け
-[PG固有の指示。例: 性能とスループットの両方を記録]
+[PG固有の指示。例: 性能とスループットの両方を記録。測定の回ごとにノードの識別子を記録し、別のノードで走った回どうしを比べない。中央値だけでなく分位も残す]
 
 #### CD向け
 [CD固有の指示。例: .gitignoreの管理方針、push頻度]
@@ -206,3 +206,4 @@ CDを使用する場合:
 - [DGEMMマルチCLI競争（8体構成、英語）](../samples/dgemm_multicli_8agents.md)
 - [CFDマルチエージェント（6体構成、日本語）](../samples/ja/cfd_multi_6agents.md)
 - [DGEMM大規模構成（PG12体、英語）](../samples/dgemm_large_12agents.md)
+- [HPC のジョブの中の自前の推論(要件定義に足すこと)](../samples/ja/self_hosted_inference_on_hpc.md#requirement_definitionmd-に足すこと)

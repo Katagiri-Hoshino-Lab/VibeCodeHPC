@@ -184,13 +184,13 @@ When using CD:
 ### Additional Instructions
 
 #### All Agents
-[Instructions for all agents]
+[Instructions for all agents. e.g., follow `instructions/REPORT_RULES.md`; agents write to each other in English; copies sent for review get numbered names (`<name>.v001.<ext>`) while the original keeps its name]
 
 #### SE-specific
-[SE-specific instructions. e.g., periodically verify all results are plotted in SOTA graphs]
+[SE-specific instructions. e.g., periodically verify all results are plotted in SOTA graphs; check both the queue and the accounting (`squeue` and `sacct`), since a job missing from the queue may still have run]
 
 #### PG-specific
-[PG-specific instructions. e.g., record both execution time and throughput]
+[PG-specific instructions. e.g., record both execution time and throughput; record the node id of every measurement round and do not compare rounds that ran on different nodes; keep quantiles, not only the median]
 
 #### CD-specific
 [CD-specific instructions. e.g., .gitignore policy, push frequency]
@@ -207,3 +207,4 @@ When using CD:
 - [DGEMM multi-CLI competition (8 agents, English)](samples/dgemm_multicli_8agents.md)
 - [CFD multi-agent (6 agents, Japanese)](samples/ja/cfd_multi_6agents.md)
 - [DGEMM large-scale (12 PGs, English)](samples/dgemm_large_12agents.md)
+- [Self-hosted inference inside an HPC job (additions to a requirement definition)](samples/self_hosted_inference_on_hpc/README.md#additions-to-requirement_definitionmd)

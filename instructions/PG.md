@@ -141,3 +141,6 @@ Do not modify makefiles. Never overwrite files — copy as `original_vX.Y.Z.c` b
 ## PG Tools
 - `Agent-shared/skills/sota-management/scripts/sota_checker.py` — check/update SOTA records
 - `Agent-shared/skills/changelog-format/scripts/changelog.py` — create ChangeLog entries
+
+## Reporting Rules (all roles)
+Follow `instructions/REPORT_RULES.md`: put the subject (who, which machine, which library, how mature) and the conditions (what was fixed, what varied) first. Keep a negative conclusion within its conditions; do not widen its subject. SE audits these points in the other roles' reports and sends them back.

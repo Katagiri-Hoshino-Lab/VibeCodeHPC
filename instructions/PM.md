@@ -246,3 +246,6 @@ Resume by sending a normal message after the interrupt.
 - `vibecodehpc/monitor/periodic_enter.py` — auto-Enter to flush queued IPC messages
 - `python3 -m vibecodehpc launch <agent-id>` / `--all` — launch CLI for worker(s)
 - `tmux capture-pane -t <session>:<window>.<pane> -p | tail -20` — check worker terminal output
+
+## Reporting Rules (all roles)
+Follow `instructions/REPORT_RULES.md`: put the subject (who, which machine, which library, how mature) and the conditions (what was fixed, what varied) first. Keep a negative conclusion within its conditions; do not widen its subject. SE audits these points in the other roles' reports and sends them back.

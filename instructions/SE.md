@@ -222,3 +222,6 @@ Before stopping, complete all items:
 - `Agent-shared/skills/sota-management/scripts/sota_visualizer.py` — SOTA graph generation (`--summary`, `--debug`, `--specific`, `--export`)
 - `Agent-shared/skills/context-monitor/scripts/context_monitor.py` — context usage graphs
 - `Agent-shared/skills/budget-tracking/scripts/budget_tracker.py` — budget consumption tracking and prediction
+
+## Reporting Rules (all roles)
+Follow `instructions/REPORT_RULES.md`: put the subject (who, which machine, which library, how mature) and the conditions (what was fixed, what varied) first. Keep a negative conclusion within its conditions; do not widen its subject. SE audits these points in the other roles' reports and sends them back.
