@@ -178,6 +178,7 @@ class AgentRegistry:
     def get_tmux_target(self, agent_id: str) -> Optional[str]:
         """Get the tmux target string for an agent."""
         entry = self.get(agent_id)
-        if entry:
+        if (entry and entry.tmux_session and entry.tmux_window is not None
+                and entry.tmux_pane is not None):
             return f"{entry.tmux_session}:{entry.tmux_window}.{entry.tmux_pane}"
         return None

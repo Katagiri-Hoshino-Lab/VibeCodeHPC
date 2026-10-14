@@ -9,6 +9,7 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 import time
 from pathlib import Path
@@ -439,8 +440,15 @@ def _build_hooks_config(config: VibeCodeConfig) -> dict:
 
 def cmd_send(args):
     """Send message to an agent."""
-    project_root = _find_project_root()
-    registry_path = project_root / "Agent-shared" / "agent_and_pane_id_table.jsonl"
+    registry_override = getattr(args, "registry", None) or os.environ.get("VIBECODEHPC_REGISTRY")
+    if registry_override:
+        registry_path = Path(registry_override).expanduser().resolve()
+        project_root = registry_path.parent
+        if project_root.name == "Agent-shared":
+            project_root = project_root.parent
+    else:
+        project_root = _find_project_root()
+        registry_path = project_root / "Agent-shared" / "agent_and_pane_id_table.jsonl"
 
     if not registry_path.exists():
         print(_err_jsonl_not_found(registry_path), file=sys.stderr)
@@ -461,12 +469,18 @@ def cmd_send(args):
         for agent_id, ok in results.items():
             status = "OK" if ok else "FAIL"
             print(f"  {agent_id}: {status}")
+        if not all(results.values()):
+            sys.exit(1)
     else:
         # Validate that the target agent exists
         entries = registry.list_all()
         entry = next((e for e in entries if e.agent_id == target), None)
         if not entry:
             print(_err_agent_not_found(target, entries), file=sys.stderr)
+            sys.exit(1)
+        if not registry.get_tmux_target(target):
+            print(f"Agent '{target}' has no tmux pane in the registry (headless or not "
+                  "launched); send only types into tmux panes.", file=sys.stderr)
             sys.exit(1)
         ok = manager.send_message(target, message)
         if ok:
@@ -577,6 +591,7 @@ def main():
 
     # send
     p_send = sub.add_parser("send", help="Send message to agent")
+    p_send.add_argument("--registry", type=Path, help="Registry JSONL (or VIBECODEHPC_REGISTRY)")
     p_send.add_argument("target", help="Target agent ID or ALL")
     p_send.add_argument("message", nargs="+", help="Message text")
 
