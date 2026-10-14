@@ -72,6 +72,9 @@ wire_api = "responses"   # サーバーと Codex の版が対応する方("chat"
 
 ## hybrid モデルの prefix cache
 
+**prefix cache の当たり率が低い時に最初に疑う設定: chat template。** `--chat-template` を渡さないと、vLLM の Anthropic 互換の口は、クライアントが `messages` に足す role system の turn を、先頭の system block の末尾へまとめる。その turn が毎回会話の手前に差し込まれるので、cache に当たる prefix は毎回 system prompt の直後で切れる。
+モデル自身の template を渡す(`--chat-template <model>/chat_template.jinja`。`serve.sh` は既定で渡し、`LLM_CHAT_TEMPLATE` で替えられる)。system の turn は会話の中の時系列の位置に残り、クライアントが送る要求の文字列は変わらない。
+
 エージェントの要求は長い prefix(システムプロンプト、ツール定義、それまでの会話)を共有する。その prefill を安く保つのが prefix cache である。
 
 sliding window の層と全体 attention の層を混ぜたモデルでは注意が要る。使った版の vLLM では、`prefix_cache_retention_interval` が既定の 0 のとき、sliding window 層の cache はプロンプトの終わりと、既に共有 prefix の継ぎ目と分かった位置にしか残らなかった。そのため新しい共有 prefix は2本目の要求で外れ、3本目から当たった。2本目は全部を prefill し直す。

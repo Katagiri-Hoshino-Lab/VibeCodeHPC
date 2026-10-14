@@ -21,6 +21,11 @@
 #   LLM_TOOL_PARSER           tool-call parser for the model (required for agents)
 #   LLM_REASONING_PARSER      reasoning parser for the model, if it has one
 #   LLM_TEXT_ONLY [1]         1: refuse image/video/audio inputs
+#   LLM_CHAT_TEMPLATE [MODEL_PATH/chat_template.jinja]  the model's own template;
+#                             "none" leaves it out. Without it the Anthropic
+#                             endpoint folds the system turns a client appends
+#                             into the first system block, which breaks the
+#                             prefix cache right after the system prompt
 #   LLM_CPU_OFFLOAD_GB [0]    >0: vLLM's own KV offload to host memory
 #   LLM_PREFIX_RETENTION [0]  >0: --prefix-cache-retention-interval (tokens,
 #                             multiple of the block size); see
@@ -61,6 +66,16 @@ else
 fi
 [ -n "${LLM_REASONING_PARSER:-}" ] && ARGS+=(--reasoning-parser "$LLM_REASONING_PARSER")
 [ "${LLM_TEXT_ONLY:-1}" = 1 ] && ARGS+=(--limit-mm-per-prompt '{"image":0,"video":0,"audio":0}')
+
+TEMPLATE=${LLM_CHAT_TEMPLATE:-$MODEL/chat_template.jinja}
+if [ "$TEMPLATE" != none ]; then
+  if [ -f "$TEMPLATE" ]; then
+    ARGS+=(--chat-template "$TEMPLATE")
+  else
+    echo "warning: no chat template at $TEMPLATE; set LLM_CHAT_TEMPLATE" \
+         "(prefix-cache hits suffer without the model's own template)" >&2
+  fi
+fi
 
 OFFLOAD_GB=${LLM_CPU_OFFLOAD_GB:-0}
 if [ "$OFFLOAD_GB" -gt 0 ]; then

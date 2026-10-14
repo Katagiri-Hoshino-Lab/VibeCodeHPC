@@ -72,6 +72,9 @@ Key names follow the Codex configuration reference; check them against your Code
 
 ## Prefix caching on hybrid models
 
+**First suspect when the prefix-cache hit rate is low: the chat template.** Without `--chat-template`, vLLM's Anthropic-compatible endpoint folds the system turns that a client appends to `messages` into the end of the first system block. Every such turn is then inserted near the start of the conversation, so the cached prefix ends right after the system prompt on each request.
+Pass the model's own template (`--chat-template <model>/chat_template.jinja`; `serve.sh` does this by default, `LLM_CHAT_TEMPLATE` overrides it). The system turns then stay at their place in the conversation, and the client's requests on the wire stay the same.
+
 Agents send many requests that share a long prefix: system prompt, tool definitions and the conversation so far. Prefix caching is what keeps the prefill cost of those requests low.
 
 Models that mix sliding-window and full-attention layers need extra care. In the vLLM version we used, with the default `prefix_cache_retention_interval` of 0, the cache of sliding-window layers was kept only at the end of each prompt and at positions already known to be a shared-prefix boundary. A new shared prefix therefore missed on the second request and hit only from the third on: the second request prefilled everything again.
