@@ -39,3 +39,7 @@ PM starts automatically in a tmux session. It reads the requirement definition a
 3. PG agents iterate: code → compile → run → benchmark
 4. SE agents track statistics and generate reports
 5. Results accumulate in `User-shared/` with a final report
+
+## Running Inside an HPC Job
+
+To run the agents and your own inference engine on an allocated compute node (no internet, no SSH), see [samples/self_hosted_inference_on_hpc](samples/self_hosted_inference_on_hpc/README.md) and [Self-Hosted Inference](self_hosted_inference.md).

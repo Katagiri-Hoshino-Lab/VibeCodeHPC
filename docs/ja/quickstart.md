@@ -40,3 +40,7 @@ PM が tmux セッション内で自動起動する。要件定義を読み、wo
 3. PGが反復最適化（code → compile → run → benchmark）
 4. SEが統計追跡とreport生成
 5. 成果物は `User-shared/` に集約
+
+## HPC のジョブの中で動かす
+
+エージェントと自前の推論エンジンを確保した計算ノードで動かす場合(インターネットも SSH も無い場合)は、[samples/ja/self_hosted_inference_on_hpc.md](../samples/ja/self_hosted_inference_on_hpc.md) と [自前の推論](self_hosted_inference.md) を参照。
