@@ -50,7 +50,7 @@ class ClaudeAdapter(CLIAdapter):
         # Build settings.local.json
         settings: dict = {
             "hooks": {},
-            "envs": {"DISABLE_AUTOUPDATER": "1"},
+            "env": {"DISABLE_AUTOUPDATER": "1"},
         }
 
         if "on_stop" in hooks_config:
