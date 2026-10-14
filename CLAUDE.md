@@ -116,6 +116,7 @@ python3 -m vibecodehpc send <target> "message"
 - Include your agent_id in every message: `[PG1.1] Compile succeeded, 285.7 GFLOPS`
 - Message format: `[agent_id] [type] content` — types: Report, Request, ACK, Warning, Urgent
 - Reply to messages even if just an ACK — silence looks like a crash
+- `send` types into the target's tmux pane, looked up in the registry on every call; agents without a pane are refused. `--registry FILE` (or `VIBECODEHPC_REGISTRY`) addresses a registry outside this project.
 
 ## Agent Behavior Patterns
 
